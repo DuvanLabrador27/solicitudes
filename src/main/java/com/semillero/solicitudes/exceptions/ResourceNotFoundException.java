@@ -1,4 +1,4 @@
-package com.semillero.solicitudes.exception;
+package com.semillero.solicitudes.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
