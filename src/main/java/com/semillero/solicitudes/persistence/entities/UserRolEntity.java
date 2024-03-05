@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_rol")
@@ -31,4 +32,8 @@ public class UserRolEntity {
     @Column(name = "ds_user_rol_update" ,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime feUserRolUpdate;
+
+    @OneToMany(mappedBy = "userRolEntity",
+            targetEntity = UserEntity.class)
+    private Set<UserEntity> userEntity;
 }

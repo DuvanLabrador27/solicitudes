@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "employee")
@@ -64,8 +65,24 @@ public class EmployeeEntity {
     @Enumerated(value = EnumType.STRING)
     private StatusResource dsEmployeeStatus;
 
+    @OneToMany(mappedBy = "employeeEntity",
+            targetEntity = UserEntity.class)
+    private Set<UserEntity> userEntity;
 
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(name = "nm_id_supervisor")
+    private Set<EmployeeEntity> employeeEntity;
 
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            targetEntity = PositionEntity.class
+    )
+    @JoinColumn(name = "nm_id_position")
+    private PositionEntity positionEntity;
 
 
 }

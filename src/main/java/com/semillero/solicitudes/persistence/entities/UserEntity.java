@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -42,7 +43,27 @@ public class UserEntity {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime feUserUpdate;
 
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            targetEntity = EmployeeEntity.class
+    )
+    @JoinColumn(name = "nm_id_employee")
+    private EmployeeEntity employeeEntity;
 
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            targetEntity = UserRolEntity.class
+    )
+    @JoinColumn(name = "nm_id_rol")
+    private UserRolEntity userRolEntity;
+
+    @OneToMany(
+            mappedBy = "userEntity",
+            targetEntity = RequestVacationEntity.class
+    )
+    private Set<RequestVacationEntity> requestVacationEntity;
 
 
 

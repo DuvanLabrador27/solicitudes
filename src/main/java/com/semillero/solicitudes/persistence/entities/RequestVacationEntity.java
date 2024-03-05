@@ -63,7 +63,13 @@ public class RequestVacationEntity {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime feRequestUpdate;
 
-
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            targetEntity = UserEntity.class
+    )
+    @JoinColumn(name = "nm_id_user")
+    private UserEntity userEntity;
 
 
 

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "position")
@@ -40,4 +41,8 @@ public class PositionEntity {
     @Column(name = "fe_position_update" ,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime fePositionUpdate;
+
+    @OneToMany(mappedBy = "positionEntity",
+            targetEntity = EmployeeEntity.class)
+    private Set<EmployeeEntity> employeeEntity;
 }
