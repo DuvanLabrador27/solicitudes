@@ -1,5 +1,5 @@
 package com.semillero.solicitudes.services.interfaces;
 
-public interface IRequestVacation {
+public interface IRequestVacationService {
 
 }

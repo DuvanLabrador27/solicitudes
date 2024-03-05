@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "employee")
@@ -67,14 +67,14 @@ public class EmployeeEntity {
 
     @OneToMany(mappedBy = "employeeEntity",
             targetEntity = UserEntity.class)
-    private Set<UserEntity> userEntity;
+    private List<UserEntity> userEntity;
 
     @OneToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "employeeSupervisor"
     )
-    private Set<EmployeeEntity> employeeEntity;
+    private List<EmployeeEntity> employeeEntity;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "nm_id_supervisor")

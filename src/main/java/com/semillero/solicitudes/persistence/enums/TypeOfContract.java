@@ -4,7 +4,7 @@ public enum TypeOfContract {
     FIXED_TERM("Fixed term"),
     INDEFINITE_TERM("Indefinite term"),
     OPS("OPS"),
-    APPRENTICESHIP("Apprenticeship"),;
+    APPRENTICESHIP("Apprenticeship");
 
     private String description;
 
