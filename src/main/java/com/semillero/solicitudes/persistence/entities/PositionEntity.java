@@ -7,46 +7,37 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "position")
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
+public class PositionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "nm_id_user")
-    private Long nmIdUser;
+    @Column(name = "nm_id_position")
+    private Long nmIdPosition;
 
     @Basic(optional = false)
-    @Column(name = "ds_username")
-    private String dsUsername;
+    @Column(name = "ds_position_name")
+    private String dsPositionName;
 
     @Basic(optional = false)
-    @Column(name = "ds_password")
-    private String dsPassword;
+    @Column(name = "ds_position_description")
+    private String dsPositionDescription;
 
     @Basic(optional = false)
-    @Column(name = "ds_user_status")
-    @Enumerated(value = EnumType.STRING)
-    private StatusResource dsUserStatus;
+    @Column(name = "ds_position_status")
+    private StatusResource dsPositionStatus;
 
     @Basic(optional = false)
-    @Column(name = "fe_user_created" ,
+    @Column(name = "fe_position_creation" ,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime feUserCreated;
+    private LocalDateTime fePositionCreation;
 
     @Basic(optional = false)
-    @Column(name = "fe_user_update" ,
+    @Column(name = "fe_position_update" ,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime feUserUpdate;
-
-
-
-
-
-
-
-
+    private LocalDateTime fePositionUpdate;
 }

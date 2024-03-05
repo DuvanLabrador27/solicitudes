@@ -1,4 +1,4 @@
-package com.semillero.solicitudes.utils;
+package com.semillero.solicitudes.persistence.enums;
 
 public enum StatusRequestVacation {
     APPROVED("Approve"),

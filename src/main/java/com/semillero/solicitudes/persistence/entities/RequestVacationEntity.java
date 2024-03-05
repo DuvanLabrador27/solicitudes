@@ -1,6 +1,6 @@
 package com.semillero.solicitudes.persistence.entities;
 
-import com.semillero.solicitudes.utils.StatusRequestVacation;
+import com.semillero.solicitudes.persistence.enums.StatusRequestVacation;
 import jakarta.persistence.*;
 import lombok.*;
 
