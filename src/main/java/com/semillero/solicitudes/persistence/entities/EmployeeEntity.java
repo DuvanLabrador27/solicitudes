@@ -47,21 +47,21 @@ public class EmployeeEntity {
     @Column(name = "ds_address")
     private String dsAddress;
 
-    @Basic(optional = false)
+
     @Column(name = "fe_hire_date")
     private LocalDate feHireDate;
 
-    @Basic(optional = false)
+
     @Column(name = "fe_departure_date")
     private String feDepartureDate;
 
     @Basic(optional = false)
-    @Column(name = "ds_type_of_contract")
+    @Column(name = "ds_type_of_contract", length = 50)
     @Enumerated(value = EnumType.STRING)
     private TypeOfContract dsTypeOfContract;
 
     @Basic(optional = false)
-    @Column(name = "ds_employee_status")
+    @Column(name = "ds_employee_status", length = 20)
     @Enumerated(value = EnumType.STRING)
     private StatusResource dsEmployeeStatus;
 
@@ -71,15 +71,20 @@ public class EmployeeEntity {
 
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            mappedBy = "employeeSupervisor"
     )
-    @JoinColumn(name = "nm_id_supervisor")
     private Set<EmployeeEntity> employeeEntity;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "nm_id_supervisor")
+    private EmployeeEntity employeeSupervisor;
 
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = PositionEntity.class
+            targetEntity = PositionEntity.class,
+            optional = true
     )
     @JoinColumn(name = "nm_id_position")
     private PositionEntity positionEntity;
