@@ -1,5 +1,6 @@
 package com.semillero.solicitudes.services.impl;
 
+import com.semillero.solicitudes.exceptions.ResourceNotFoundException;
 import com.semillero.solicitudes.persistence.dto.EmployeeDto;
 import com.semillero.solicitudes.persistence.entities.EmployeeEntity;
 import com.semillero.solicitudes.persistence.mappers.EmployeeMapper;
@@ -28,8 +29,11 @@ public class EmployeeServiceImpl implements IEmployeeService {
     }
 
     @Override
-    public EmployeeDto getEmployeeById(Long id) {
-        return null;
+    public EmployeeDto getEmployeeById(Long employeeId) {
+        EmployeeEntity employee = this.employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
+        return this.employeeMapper.employeeToEmployeeDto(employee);
+
     }
 
     @Override
