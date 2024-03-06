@@ -1,9 +1,8 @@
 package com.semillero.solicitudes.exceptions.handlers;
 
-import com.semillero.solicitudes.exceptions.ResourceNotComplete;
+import com.semillero.solicitudes.exceptions.ResourceBadRequestException;
 import com.semillero.solicitudes.exceptions.ResourceNotFoundException;
 import com.semillero.solicitudes.persistence.dto.ErrorDetail;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +15,7 @@ import java.util.Date;
 @RestControllerAdvice
 public class HandlerException extends ResponseEntityExceptionHandler {
     private final ErrorDetail errorDetail;
+
     public HandlerException(ErrorDetail errorDetail) {
         this.errorDetail = errorDetail;
     }
@@ -31,9 +31,9 @@ public class HandlerException extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetail, null, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ResourceNotComplete.class)
+    @ExceptionHandler(ResourceBadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<?> resourceNotComplete(ResourceNotComplete ex) {
+    public ResponseEntity<?> resourceNotComplete(ResourceBadRequestException ex) {
         errorDetail.setDateTime(new Date());
         errorDetail.setStatus(HttpStatus.BAD_REQUEST.value());
         errorDetail.setTitle("Resource Not Complete");

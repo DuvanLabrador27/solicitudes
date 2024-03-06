@@ -53,7 +53,7 @@ public class EmployeeEntity {
 
 
     @Column(name = "fe_departure_date")
-    private String feDepartureDate;
+    private LocalDate feDepartureDate;
 
     @Basic(optional = false)
     @Column(name = "ds_type_of_contract", length = 50)

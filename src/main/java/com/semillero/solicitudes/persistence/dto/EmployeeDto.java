@@ -21,7 +21,7 @@ public class EmployeeDto {
     private String dsPhoneNumber;
     private String dsAddress;
     private LocalDate feHireDate;
-    private String feDepartureDate;
+    private LocalDate feDepartureDate;
     private TypeOfContract dsTypeOfContract;
     private StatusResource dsEmployeeStatus;
 
