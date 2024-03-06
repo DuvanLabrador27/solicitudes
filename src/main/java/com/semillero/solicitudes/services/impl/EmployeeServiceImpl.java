@@ -1,5 +1,6 @@
 package com.semillero.solicitudes.services.impl;
 
+import com.semillero.solicitudes.exceptions.ResourceNotComplete;
 import com.semillero.solicitudes.exceptions.ResourceNotFoundException;
 import com.semillero.solicitudes.persistence.dto.EmployeeDto;
 import com.semillero.solicitudes.persistence.entities.EmployeeEntity;
@@ -30,15 +31,19 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public EmployeeDto getEmployeeById(Long employeeId) {
-        EmployeeEntity employee = this.employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
+        verifyEmployeeExistence(employeeId);
+        EmployeeEntity employee = this.employeeRepository.findById(employeeId).get();
         return this.employeeMapper.employeeToEmployeeDto(employee);
 
     }
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employee) {
-        return null;
+            verifyEmployeeData(employee);
+            EmployeeEntity employeeEntity = this.employeeMapper.employeeToEmployeeEntity(employee);
+            EmployeeEntity employeeRepo = this.employeeRepository.save(employeeEntity);
+            return this.employeeMapper.employeeToEmployeeDto(employeeRepo);
+
     }
 
     @Override
@@ -49,5 +54,21 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public Boolean deleteEmployee(Long id) {
         return null;
+    }
+
+    public void verifyEmployeeData(EmployeeDto employeeDto){
+        if(employeeDto.getDsDocument()==null
+        || employeeDto.getDsDocumentType()==null || employeeDto.getDsName()==null
+        || employeeDto.getDsLastname() == null || employeeDto.getDsPhoneNumber() == null
+        || employeeDto.getDsAddress() == null || employeeDto.getFeHireDate() == null
+        || employeeDto.getDsTypeOfContract() == null || employeeDto.getDsEmployeeStatus() == null){
+            throw new ResourceNotComplete("Employee data is not complete");
+        }
+    }
+
+    public void verifyEmployeeExistence(Long id){
+        if(!this.employeeRepository.existsById(id)){
+            throw new ResourceNotFoundException("Employee not found with id: " + id);
+        }
     }
 }

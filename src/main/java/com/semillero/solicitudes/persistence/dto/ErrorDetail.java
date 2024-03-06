@@ -1,6 +1,8 @@
 package com.semillero.solicitudes.persistence.dto;
 
 import lombok.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -9,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Component
 public class ErrorDetail {
     private String title;
     private int status;
