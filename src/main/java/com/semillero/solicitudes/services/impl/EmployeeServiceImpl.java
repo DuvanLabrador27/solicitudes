@@ -99,8 +99,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     public void verifyDate(EmployeeDto employeeDto) {
         if (employeeDto.getFeDepartureDate() != null && employeeDto.getFeDepartureDate().isBefore(employeeDto.getFeHireDate())) {
-            throw new ResourceBadRequestException("Departure date "
-                    + employeeDto.getFeDepartureDate()
+            throw new ResourceBadRequestException("Departure date " + employeeDto.getFeDepartureDate()
                     + " can't be before hire date " + employeeDto.getFeHireDate());
         }
     }
