@@ -71,7 +71,14 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public Boolean deleteEmployee(Long id) {
-        return null;
+        verifyEmployeeExistence(id);
+        EmployeeEntity employeeEntity = this.employeeRepository.findById(id).get();
+        if(employeeEntity != null){
+            this.employeeRepository.delete(employeeEntity);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public void verifyEmployeeData(EmployeeDto employeeDto) {
