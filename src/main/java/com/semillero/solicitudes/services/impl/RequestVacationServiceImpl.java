@@ -13,6 +13,7 @@ import com.semillero.solicitudes.services.interfaces.IRequestVacationService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,17 +48,19 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
     public RequestVacationDto createRequestVacation(RequestVacationDto requestVacation, Long userId) {
         verifyUserExistence(userId);
         UserEntity user = this.userRepository.findById(userId).get();
-        validateOneYear(user);
-        RequestVacationEntity requestVacationEntity = new RequestVacationEntity();
-        requestVacationEntity.setNameRequest(requestVacation.getNameRequest());
-        requestVacationEntity.setDescription(requestVacation.getDescription());
-        requestVacationEntity.setNmNumberOfDaysRequested(requestVacation.getNmNumberOfDaysRequested());
-        requestVacationEntity.setFeStartDate(requestVacation.getFeStartDate());
-        requestVacationEntity.setFeEndDate(requestVacation.getFeEndDate());
-        requestVacationEntity.setFeReinstatementDate(requestVacation.getFeReinstatementDate());
-        requestVacationEntity.setDsStatus(StatusRequestVacation.PENDING);
-        requestVacationEntity.setUserEntity(user);
 
+        boolean oneYear = validateOneYear(user);
+        boolean periodProbation = !oneYear && validateMonth(user);
+
+
+
+        if(oneYear){
+            if ( requestVacation.getNmNumberOfDaysRequested()<1 || requestVacation.getNmNumberOfDaysRequested()>15){
+                throw new ResourceBadRequestException("Number of vacation days must be between 1 and 15");
+            }
+        }
+
+        RequestVacationEntity requestVacationEntity = createRequest(requestVacation, user);
         RequestVacationEntity requestSaved = this.requestVacationRepository.save(requestVacationEntity);
         return this.requestVacationMapper.requestVacationToRequestVacationDto(requestSaved);
     }
@@ -78,7 +81,41 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         } else {
             return true;
         }
+    }
 
+    public boolean validateMonth(UserEntity user){
+        LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
+        LocalDate currentDate = LocalDate.now();
+        LocalDate vacationVerify = hireDate.plusMonths(2);
+        if (currentDate.isBefore(vacationVerify)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public int calculateDayAvailable(UserEntity user){
+        LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
+        LocalDate current = LocalDate.now();
+
+        long monthsWorked = Period.between(hireDate,current).toTotalMonths();
+        int maxDays = 15;
+        int monthsYear = 12;
+        int availableDays = (int) Math.round((double) (monthsWorked/monthsYear) * maxDays);
+        return availableDays;
+    }
+
+    private RequestVacationEntity createRequest(RequestVacationDto requestVacation, UserEntity user){
+        RequestVacationEntity requestVacationEntity = new RequestVacationEntity();
+        requestVacationEntity.setNameRequest(requestVacation.getNameRequest());
+        requestVacationEntity.setDescription(requestVacation.getDescription());
+        requestVacationEntity.setNmNumberOfDaysRequested(requestVacation.getNmNumberOfDaysRequested());
+        requestVacationEntity.setFeStartDate(requestVacation.getFeStartDate());
+        requestVacationEntity.setFeEndDate(requestVacation.getFeEndDate());
+        requestVacationEntity.setFeReinstatementDate(requestVacation.getFeReinstatementDate());
+        requestVacationEntity.setDsStatus(StatusRequestVacation.PENDING);
+        requestVacationEntity.setUserEntity(user);
+        return requestVacationEntity;
     }
 
 
