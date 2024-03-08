@@ -1,7 +1,7 @@
 package com.semillero.solicitudes.persistence.entities;
 
 import com.semillero.solicitudes.persistence.enums.DocumentTypes;
-import com.semillero.solicitudes.persistence.enums.StatusResource;
+import com.semillero.solicitudes.persistence.enums.UserStatus;
 import com.semillero.solicitudes.persistence.enums.TypeOfContract;
 import jakarta.persistence.*;
 import lombok.*;
@@ -63,7 +63,7 @@ public class EmployeeEntity {
     @Basic(optional = false)
     @Column(name = "ds_employee_status", length = 20)
     @Enumerated(value = EnumType.STRING)
-    private StatusResource dsEmployeeStatus;
+    private UserStatus dsEmployeeStatus;
 
     @OneToMany(mappedBy = "employeeEntity",
             targetEntity = UserEntity.class)

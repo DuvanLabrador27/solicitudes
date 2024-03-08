@@ -1,12 +1,12 @@
 package com.semillero.solicitudes.persistence.enums;
 
-public enum StatusResource {
+public enum UserStatus {
     ACTIVE("Active"),
     INACTIVE("Inactive");
 
     private String description;
 
-    private StatusResource(String description){
+    private UserStatus(String description){
         this.description = description;
     }
 

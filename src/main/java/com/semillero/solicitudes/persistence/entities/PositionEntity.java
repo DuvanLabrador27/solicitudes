@@ -1,6 +1,6 @@
 package com.semillero.solicitudes.persistence.entities;
 
-import com.semillero.solicitudes.persistence.enums.StatusResource;
+import com.semillero.solicitudes.persistence.enums.PositionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,17 +30,13 @@ public class PositionEntity {
 
     @Basic(optional = false)
     @Column(name = "ds_position_status")
-    private StatusResource dsPositionStatus;
+    private PositionStatus dsPositionStatus;
 
     @Basic(optional = false)
     @Column(name = "fe_position_creation" ,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fePositionCreation;
 
-    @Basic(optional = false)
-    @Column(name = "fe_position_update" ,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime fePositionUpdate;
 
     @OneToMany(mappedBy = "positionEntity",
             targetEntity = EmployeeEntity.class)

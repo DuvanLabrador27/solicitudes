@@ -1,8 +1,7 @@
 package com.semillero.solicitudes.persistence.dto;
 
-import com.semillero.solicitudes.persistence.entities.EmployeeEntity;
 import com.semillero.solicitudes.persistence.enums.DocumentTypes;
-import com.semillero.solicitudes.persistence.enums.StatusResource;
+import com.semillero.solicitudes.persistence.enums.UserStatus;
 import com.semillero.solicitudes.persistence.enums.TypeOfContract;
 import lombok.*;
 
@@ -23,6 +22,6 @@ public class EmployeeDto {
     private LocalDate feHireDate;
     private LocalDate feDepartureDate;
     private TypeOfContract dsTypeOfContract;
-    private StatusResource dsEmployeeStatus;
+    private UserStatus dsEmployeeStatus;
 
 }

@@ -1,6 +1,6 @@
 package com.semillero.solicitudes.persistence.dto;
 
-import com.semillero.solicitudes.persistence.enums.StatusResource;
+import com.semillero.solicitudes.persistence.enums.UserStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,6 +14,6 @@ public class UserDto {
     private String dsUsername;
     private String dsPassword;
     private String dsEmail;
-    private StatusResource dsUserStatus;
+    private UserStatus dsUserStatus;
     private LocalDateTime feUserCreated;
 }

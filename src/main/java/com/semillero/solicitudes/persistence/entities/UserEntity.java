@@ -1,6 +1,6 @@
 package com.semillero.solicitudes.persistence.entities;
 
-import com.semillero.solicitudes.persistence.enums.StatusResource;
+import com.semillero.solicitudes.persistence.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -37,7 +37,7 @@ public class UserEntity {
     @Basic(optional = false)
     @Column(name = "ds_user_status")
     @Enumerated(value = EnumType.STRING)
-    private StatusResource dsUserStatus;
+    private UserStatus dsUserStatus;
 
     @Basic(optional = false)
     @Column(name = "fe_user_created" ,
