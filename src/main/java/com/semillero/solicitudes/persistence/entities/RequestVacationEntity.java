@@ -20,11 +20,11 @@ public class RequestVacationEntity {
     @Column(name = "nm_id_request")
     private Long nmIdRequest;
 
-    @Basic(optional = false)
-    @Column(name = "name_request")
-    private String name_request;
 
-    @Basic(optional = false)
+    @Column(name = "name_request")
+    private String nameRequest;
+
+
     @Column(name = "description")
     private String description;
 
@@ -45,28 +45,22 @@ public class RequestVacationEntity {
     private LocalDate feReinstatementDate;
 
     @Basic(optional = false)
-    @Column(name = "ds_status", length = 10)
+    @Column(name = "ds_status", length = 10, columnDefinition = "VARCHAR(10) DEFAULT 'PENDING'")
     @Enumerated(value = EnumType.STRING)
-    private StatusRequestVacation dsStatus;
-
-    @Basic(optional = false)
-    @Column(name = "ds_comment_review")
-    private String dsCommentReview;
+    private StatusRequestVacation dsStatus = StatusRequestVacation.PENDING;
 
     @Basic(optional = false)
     @Column(name = "fe_request_creation" ,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime feRequestCreation;
+    private LocalDateTime feRequestCreation = LocalDateTime.now();
 
-    @Basic(optional = false)
-    @Column(name = "fe_request_update" ,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime feRequestUpdate;
 
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = UserEntity.class
+            targetEntity = UserEntity.class,
+            //Mientras
+            optional = true
     )
     @JoinColumn(name = "nm_id_user")
     private UserEntity userEntity;

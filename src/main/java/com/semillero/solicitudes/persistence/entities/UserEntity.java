@@ -2,6 +2,7 @@ package com.semillero.solicitudes.persistence.entities;
 
 import com.semillero.solicitudes.persistence.enums.StatusResource;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,11 @@ public class UserEntity {
     private String dsPassword;
 
     @Basic(optional = false)
+    @Column(name = "email")
+    @Email
+    private String dsEmail;
+
+    @Basic(optional = false)
     @Column(name = "ds_user_status")
     @Enumerated(value = EnumType.STRING)
     private StatusResource dsUserStatus;
@@ -36,12 +42,9 @@ public class UserEntity {
     @Basic(optional = false)
     @Column(name = "fe_user_created" ,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime feUserCreated;
+    private LocalDateTime feUserCreated = LocalDateTime.now();
 
-    @Basic(optional = false)
-    @Column(name = "fe_user_update" ,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime feUserUpdate;
+
 
     @ManyToOne(
             fetch = FetchType.LAZY,
@@ -54,7 +57,8 @@ public class UserEntity {
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = UserRolEntity.class
+            targetEntity = UserRolEntity.class,
+            optional = true
     )
     @JoinColumn(name = "nm_id_rol")
     private UserRolEntity userRolEntity;
@@ -62,6 +66,7 @@ public class UserEntity {
     @OneToMany(
             mappedBy = "userEntity",
             targetEntity = RequestVacationEntity.class
+
     )
     private Set<RequestVacationEntity> requestVacationEntity;
 
