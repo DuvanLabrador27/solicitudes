@@ -49,17 +49,22 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         verifyUserExistence(userId);
         UserEntity user = this.userRepository.findById(userId).get();
 
-        boolean oneYear = validateOneYear(user);
-        boolean periodProbation = !oneYear && validateMonth(user);
-
-
-
-        if(oneYear){
-            if ( requestVacation.getNmNumberOfDaysRequested()<1 || requestVacation.getNmNumberOfDaysRequested()>15){
-                throw new ResourceBadRequestException("Number of vacation days must be between 1 and 15");
+        boolean periodProbation = validateMonth(user);
+        if (periodProbation) {
+            try {
+                int availableDay = calculateDayAvailable(user);
+                requestVacation.setNmNumberOfDaysRequested(availableDay);
+            } catch (ResourceBadRequestException ex) {
+                throw new ResourceBadRequestException("Vacations can only be requested if you have more than 2 months");
             }
         }
 
+        boolean oneYear = validateOneYear(user);
+        if (oneYear) {
+            if (requestVacation.getNmNumberOfDaysRequested() < 1 || requestVacation.getNmNumberOfDaysRequested() > 15) {
+                throw new ResourceBadRequestException("Number of vacation days must be between 1 and 15");
+            }
+        }
         RequestVacationEntity requestVacationEntity = createRequest(requestVacation, user);
         RequestVacationEntity requestSaved = this.requestVacationRepository.save(requestVacationEntity);
         return this.requestVacationMapper.requestVacationToRequestVacationDto(requestSaved);
@@ -74,38 +79,47 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
     public boolean validateOneYear(UserEntity user) {
         LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
         LocalDate currentDate = LocalDate.now();
-        LocalDate vacationVerify = hireDate.plusYears(1);
+        //LocalDate vacationVerify = hireDate.plusYears(1);
 
-        if (currentDate.isBefore(vacationVerify)) {
-            throw new ResourceBadRequestException("Vacations can only be requested after one year of employment, try in another moment");
-        } else {
+        Period period = Period.between(hireDate, currentDate);
+
+        if (period.getYears() >= 1) {
+
             return true;
+
+        } else {
+            return false;
         }
     }
 
-    public boolean validateMonth(UserEntity user){
+    public boolean validateMonth(UserEntity user) {
         LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
         LocalDate currentDate = LocalDate.now();
-        LocalDate vacationVerify = hireDate.plusMonths(2);
-        if (currentDate.isBefore(vacationVerify)) {
-            return false;
-        } else {
+        //LocalDate vacationVerify = hireDate.plusMonths(2);
+        Period period = Period.between(hireDate, currentDate);
+        if (period.getMonths() > 2) {
             return true;
+        } else {
+            return false;
         }
     }
 
-    public int calculateDayAvailable(UserEntity user){
+    public int calculateDayAvailable(UserEntity user) {
         LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
         LocalDate current = LocalDate.now();
 
-        long monthsWorked = Period.between(hireDate,current).toTotalMonths();
+        long monthsWorked = Period.between(hireDate, current).toTotalMonths();
+
+        int months = (int) monthsWorked;
         int maxDays = 15;
         int monthsYear = 12;
-        int availableDays = (int) Math.round((double) (monthsWorked/monthsYear) * maxDays);
+        double div = (double) months / monthsYear;
+        int availableDays = (int) Math.ceil(div * maxDays);
         return availableDays;
+
     }
 
-    private RequestVacationEntity createRequest(RequestVacationDto requestVacation, UserEntity user){
+    private RequestVacationEntity createRequest(RequestVacationDto requestVacation, UserEntity user) {
         RequestVacationEntity requestVacationEntity = new RequestVacationEntity();
         requestVacationEntity.setNameRequest(requestVacation.getNameRequest());
         requestVacationEntity.setDescription(requestVacation.getDescription());
