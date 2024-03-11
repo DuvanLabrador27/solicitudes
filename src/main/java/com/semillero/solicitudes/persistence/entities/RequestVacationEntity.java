@@ -28,7 +28,7 @@ public class RequestVacationEntity {
     @Column(name = "description")
     private String description;
 
-    @Basic(optional = false)
+
     @Column(name = "nm_number_of_days_requested")
     private Integer nmNumberOfDaysRequested;
 

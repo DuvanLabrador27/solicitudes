@@ -50,21 +50,19 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         UserEntity user = this.userRepository.findById(userId).get();
 
         boolean periodProbation = validateMonth(user);
-        if (periodProbation) {
-            try {
-                int availableDay = calculateDayAvailable(user);
-                requestVacation.setNmNumberOfDaysRequested(availableDay);
-            } catch (ResourceBadRequestException ex) {
-                throw new ResourceBadRequestException("Vacations can only be requested if you have more than 2 months");
+        boolean oneYear = validateOneYear(user);
+
+        if (periodProbation && !oneYear) {
+            int availableDay = calculateDayAvailable(user);
+            requestVacation.setNmNumberOfDaysRequested(availableDay);
+        } else if (oneYear) {
+            if (requestVacation.getNmNumberOfDaysRequested() < 6 || requestVacation.getNmNumberOfDaysRequested() > 15) {
+                throw new ResourceBadRequestException("Number of vacation days must be between 6 and 15");
             }
+        } else {
+            throw new ResourceBadRequestException("Vacations can only be requested if you have more than 2 months");
         }
 
-        boolean oneYear = validateOneYear(user);
-        if (oneYear) {
-            if (requestVacation.getNmNumberOfDaysRequested() < 1 || requestVacation.getNmNumberOfDaysRequested() > 15) {
-                throw new ResourceBadRequestException("Number of vacation days must be between 1 and 15");
-            }
-        }
         RequestVacationEntity requestVacationEntity = createRequest(requestVacation, user);
         RequestVacationEntity requestSaved = this.requestVacationRepository.save(requestVacationEntity);
         return this.requestVacationMapper.requestVacationToRequestVacationDto(requestSaved);
@@ -95,14 +93,15 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
     public boolean validateMonth(UserEntity user) {
         LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
         LocalDate currentDate = LocalDate.now();
-        //LocalDate vacationVerify = hireDate.plusMonths(2);
         Period period = Period.between(hireDate, currentDate);
-        if (period.getMonths() > 2) {
+        System.out.println("MESES " + period.getMonths());
+        if (period.getYears() == 0 && period.getMonths() > 2) {
             return true;
         } else {
             return false;
         }
     }
+
 
     public int calculateDayAvailable(UserEntity user) {
         LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
