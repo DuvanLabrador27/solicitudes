@@ -8,4 +8,4 @@ INSERT INTO users (ds_username, ds_password, email,ds_user_status, nm_id_employe
 INSERT INTO users (ds_username, ds_password, email,ds_user_status, nm_id_employee) VALUES ('CR7', '123','cr7@gmail.com','Active', 2);
 INSERT INTO users (ds_username, ds_password, email,ds_user_status, nm_id_employee) VALUES ('ney', '123','ney@gmail.com','Active', 3);
 
-INSERT INTO request_vacation (name_request,description,fe_start_date, fe_end_date,nm_number_of_days_requested,nm_id_user) VALUES ('NAME REQUEST 1','THIS IS THE FIRST REQUEST','2023-01-01', '2023-01-05', 5, 1);
+

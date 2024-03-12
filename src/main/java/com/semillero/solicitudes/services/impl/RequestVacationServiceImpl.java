@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -165,12 +166,11 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
     private void validateVacationRequestDate(LocalDate startDate) {
         LocalDate today = LocalDate.now();
-        Period period = Period.between(today, startDate);
-        if (period.getDays() < 15) {
+        long daysDifference = ChronoUnit.DAYS.between(today, startDate);
+        if (daysDifference < 15) {
             throw new ResourceBadRequestException("Vacation request must be made at least 15 days before the start date");
         }
     }
-
 
     private RequestVacationEntity createRequest(RequestVacationDto requestVacation, UserEntity user) {
         RequestVacationEntity requestVacationEntity = new RequestVacationEntity();
