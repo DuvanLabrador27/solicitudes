@@ -6,6 +6,7 @@ import com.semillero.solicitudes.persistence.dto.RequestVacationDto;
 import com.semillero.solicitudes.persistence.entities.RequestVacationEntity;
 import com.semillero.solicitudes.persistence.entities.UserEntity;
 import com.semillero.solicitudes.persistence.enums.StatusRequestVacation;
+import com.semillero.solicitudes.persistence.enums.TypeOfContract;
 import com.semillero.solicitudes.persistence.mappers.RequestVacationMapper;
 import com.semillero.solicitudes.persistence.repositories.RequestVacationRepository;
 import com.semillero.solicitudes.persistence.repositories.UserRepository;
@@ -52,6 +53,12 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
         boolean periodProbation = validateMonth(user);
         boolean oneYear = validateOneYear(user);
+        LocalDate startDate = requestVacation.getFeStartDate();
+
+        TypeOfContract contractType = user.getEmployeeEntity().getDsTypeOfContract();
+        if (contractType != TypeOfContract.FIXED_TERM && contractType != TypeOfContract.INDEFINITE_TERM) {
+            throw new ResourceBadRequestException("Vacation request can only be created for employees with fixed term or indefinite term contracts");
+        }
 
         if (periodProbation && !oneYear) {
             int availableDay = calculateDayAvailable(user);
@@ -59,6 +66,8 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
             LocalDate reinstatementDate = reinstatementDate(requestVacation.getFeStartDate(), availableDay);
             requestVacation.setFeReinstatementDate(reinstatementDate);
+            LocalDate endDate = startDate.plusDays(availableDay).minusDays(1);
+            requestVacation.setFeEndDate(endDate);
         } else if (oneYear) {
             if (requestVacation.getNmNumberOfDaysRequested() == null) {
                 throw new ResourceBadRequestException("You must enter the number of vacation days");
@@ -66,8 +75,12 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
             if (requestVacation.getNmNumberOfDaysRequested() < 6 || requestVacation.getNmNumberOfDaysRequested() > 15) {
                 throw new ResourceBadRequestException("Number of vacation days must be between 6 and 15");
             }
+
             LocalDate reinstatementDate = reinstatementDate(requestVacation.getFeStartDate(), requestVacation.getNmNumberOfDaysRequested());
             requestVacation.setFeReinstatementDate(reinstatementDate);
+
+            LocalDate endDate = startDate.plusDays(requestVacation.getNmNumberOfDaysRequested()).minusDays(1);
+            requestVacation.setFeEndDate(endDate);
         } else {
             throw new ResourceBadRequestException("Vacations can only be requested if you have more than 2 months");
         }
@@ -128,24 +141,24 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
     }
 
-    private boolean isBusinessDay(LocalDate dateAvailable){
+    private boolean isBusinessDay(LocalDate dateAvailable) {
         DayOfWeek dayOfWeek = dateAvailable.getDayOfWeek();
         return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
     }
 
-    private LocalDate searchBusinessDay(LocalDate dateAvailable){
+    private LocalDate searchBusinessDay(LocalDate dateAvailable) {
         LocalDate nextDay = dateAvailable.plusDays(1);
-        while(!isBusinessDay(dateAvailable)){
+        while (!isBusinessDay(dateAvailable)) {
             nextDay = nextDay.plusDays(1);
         }
         return nextDay;
     }
 
-    private LocalDate reinstatementDate(LocalDate startDate, int availableDays){
+    private LocalDate reinstatementDate(LocalDate startDate, int availableDays) {
         LocalDate departureDay = startDate.plusDays(availableDays);
 
-        if(isBusinessDay(departureDay)){
-            return  departureDay;
+        if (isBusinessDay(departureDay)) {
+            return departureDay;
         }
         return searchBusinessDay(departureDay);
     }
@@ -157,7 +170,6 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
             throw new ResourceBadRequestException("Vacation request must be made at least 15 days before the start date");
         }
     }
-
 
 
     private RequestVacationEntity createRequest(RequestVacationDto requestVacation, UserEntity user) {
