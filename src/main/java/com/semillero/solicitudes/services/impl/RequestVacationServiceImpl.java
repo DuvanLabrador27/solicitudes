@@ -68,10 +68,18 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
             LocalDate reinstatementDate = reinstatementDate(requestVacation.getFeStartDate(), availableDay);
             requestVacation.setFeReinstatementDate(reinstatementDate);
 
-            LocalDate endDate = calculateEndDate(requestVacation.getFeStartDate(), requestVacation.getNmNumberOfDaysRequested());
-            requestVacation.setFeEndDate(endDate);
+            LocalDate endDate = calculateEndDate(requestVacation.getFeStartDate(), availableDay);
+            if (isBusinessDay(endDate.plusDays(1))) {
+                requestVacation.setFeEndDate(endDate);
+                requestVacation.setFeReinstatementDate(endDate.plusDays(1));
+            } else {
+                LocalDate nextBusinessDay = searchBusinessDay(endDate.plusDays(1));
+                requestVacation.setFeEndDate(endDate);
+                requestVacation.setFeReinstatementDate(nextBusinessDay);
+            }
+        }
 
-        } else if (oneYear) {
+        else if (oneYear) {
             if (requestVacation.getNmNumberOfDaysRequested() == null) {
                 throw new ResourceBadRequestException("You must enter the number of vacation days");
             }

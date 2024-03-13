@@ -28,7 +28,7 @@ public class RequestVacationEntity {
     @Column(name = "description")
     private String description;
 
-
+    @Basic(optional = false)
     @Column(name = "nm_number_of_days_requested")
     private Integer nmNumberOfDaysRequested;
 
@@ -36,11 +36,11 @@ public class RequestVacationEntity {
     @Column(name = "fe_start_date")
     private LocalDate feStartDate;
 
-
+    @Basic(optional = false)
     @Column(name = "fe_end_date")
     private LocalDate feEndDate;
 
-
+    @Basic(optional = false)
     @Column(name = "fe_reinstatement_date")
     private LocalDate feReinstatementDate;
 
