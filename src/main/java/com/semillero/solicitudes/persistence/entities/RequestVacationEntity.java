@@ -36,15 +36,15 @@ public class RequestVacationEntity {
     @Column(name = "fe_start_date")
     private LocalDate feStartDate;
 
-    @Basic(optional = false)
+
     @Column(name = "fe_end_date")
     private LocalDate feEndDate;
 
-    @Basic(optional = false)
+
     @Column(name = "fe_reinstatement_date")
     private LocalDate feReinstatementDate;
 
-    @Basic(optional = false)
+
     @Column(name = "ds_status", length = 10, columnDefinition = "VARCHAR(10) DEFAULT 'PENDING'")
     @Enumerated(value = EnumType.STRING)
     private StatusRequestVacation dsStatus = StatusRequestVacation.PENDING;

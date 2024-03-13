@@ -54,7 +54,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
         boolean periodProbation = validateMonth(user);
         boolean oneYear = validateOneYear(user);
-        LocalDate startDate = requestVacation.getFeStartDate();
+
 
         TypeOfContract contractType = user.getEmployeeEntity().getDsTypeOfContract();
         if (contractType != TypeOfContract.FIXED_TERM && contractType != TypeOfContract.INDEFINITE_TERM) {
@@ -67,8 +67,10 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
             LocalDate reinstatementDate = reinstatementDate(requestVacation.getFeStartDate(), availableDay);
             requestVacation.setFeReinstatementDate(reinstatementDate);
-            LocalDate endDate = startDate.plusDays(availableDay).minusDays(1);
+
+            LocalDate endDate = calculateEndDate(requestVacation.getFeStartDate(), requestVacation.getNmNumberOfDaysRequested());
             requestVacation.setFeEndDate(endDate);
+
         } else if (oneYear) {
             if (requestVacation.getNmNumberOfDaysRequested() == null) {
                 throw new ResourceBadRequestException("You must enter the number of vacation days");
@@ -80,8 +82,9 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
             LocalDate reinstatementDate = reinstatementDate(requestVacation.getFeStartDate(), requestVacation.getNmNumberOfDaysRequested());
             requestVacation.setFeReinstatementDate(reinstatementDate);
 
-            LocalDate endDate = startDate.plusDays(requestVacation.getNmNumberOfDaysRequested()).minusDays(1);
+            LocalDate endDate = calculateEndDate(requestVacation.getFeStartDate(), requestVacation.getNmNumberOfDaysRequested());
             requestVacation.setFeEndDate(endDate);
+
         } else {
             throw new ResourceBadRequestException("Vacations can only be requested if you have more than 2 months");
         }
@@ -143,34 +146,50 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
     }
 
     private boolean isBusinessDay(LocalDate dateAvailable) {
-        DayOfWeek dayOfWeek = dateAvailable.getDayOfWeek();
-        return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
+        return dateAvailable.getDayOfWeek() != DayOfWeek.SATURDAY && dateAvailable.getDayOfWeek() != DayOfWeek.SUNDAY;
     }
 
     private LocalDate searchBusinessDay(LocalDate dateAvailable) {
         LocalDate nextDay = dateAvailable.plusDays(1);
-        while (!isBusinessDay(dateAvailable)) {
+
+        while (!isBusinessDay(nextDay)) {
             nextDay = nextDay.plusDays(1);
         }
+
         return nextDay;
     }
+
 
     private LocalDate reinstatementDate(LocalDate startDate, int availableDays) {
         LocalDate departureDay = startDate.plusDays(availableDays);
 
-        if (isBusinessDay(departureDay)) {
-            return departureDay;
-        }
+        departureDay = departureDay.plusDays(2);
+
         return searchBusinessDay(departureDay);
     }
+
 
     private void validateVacationRequestDate(LocalDate startDate) {
         LocalDate today = LocalDate.now();
         long daysDifference = ChronoUnit.DAYS.between(today, startDate);
+
         if (daysDifference < 15) {
             throw new ResourceBadRequestException("Vacation request must be made at least 15 days before the start date");
         }
     }
+
+    private LocalDate calculateEndDate(LocalDate startDate, int numberOfDaysRequested) {
+        LocalDate endDate = startDate;
+        int daysAdded = 0;
+        while (daysAdded < numberOfDaysRequested) {
+            endDate = endDate.plusDays(1);
+            if (isBusinessDay(endDate)) {
+                daysAdded++;
+            }
+        }
+        return endDate;
+    }
+
 
     private RequestVacationEntity createRequest(RequestVacationDto requestVacation, UserEntity user) {
         RequestVacationEntity requestVacationEntity = new RequestVacationEntity();
