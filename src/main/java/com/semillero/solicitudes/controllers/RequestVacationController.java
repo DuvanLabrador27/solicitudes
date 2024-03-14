@@ -26,8 +26,7 @@ public class RequestVacationController {
 
     @Operation(
             summary = "Find all RequestVacation",
-            description = "This endpoint is used to find all RequestVacation",
-            tags = {"RequestVacation"}
+            description = "This endpoint is used to find all RequestVacation"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestVacationDto.class)), mediaType = "application/json")),
@@ -59,8 +58,7 @@ public class RequestVacationController {
                     " then the number of vacation days is not passed. " +
                     "If he or she has been working for one year or more," +
                     " it is necessary to pass the number of days that" +
-                    " he or she wishes to request.",
-            tags = {"RequestVacation"}
+                    " he or she wishes to request."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = RequestVacationDto.class), mediaType = "application/json")),

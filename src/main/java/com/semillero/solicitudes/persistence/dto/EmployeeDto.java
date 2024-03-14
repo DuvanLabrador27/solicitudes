@@ -1,5 +1,6 @@
 package com.semillero.solicitudes.persistence.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.semillero.solicitudes.persistence.enums.DocumentTypes;
 import com.semillero.solicitudes.persistence.enums.UserStatus;
 import com.semillero.solicitudes.persistence.enums.TypeOfContract;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 public class EmployeeDto {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long nmIdEmployee;
     private String dsDocument;
     private DocumentTypes dsDocumentType;
