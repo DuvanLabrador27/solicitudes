@@ -10,5 +10,4 @@ public interface IRequestVacationService {
     public List<RequestVacationDto> getRequestVacationById(Long requestId, Long userId);
     public RequestVacationDto createRequestVacation(RequestVacationDto requestVacation, Long userId);
 
-
 }

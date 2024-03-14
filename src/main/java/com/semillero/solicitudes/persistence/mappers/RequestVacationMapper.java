@@ -11,4 +11,5 @@ public interface RequestVacationMapper {
     RequestVacationDto requestVacationToRequestVacationDto(RequestVacationEntity requestVacationEntity);
     @InheritInverseConfiguration
     RequestVacationEntity requestVacationToRequestVacationEntity(RequestVacationDto requestVacationDto);
+
 }

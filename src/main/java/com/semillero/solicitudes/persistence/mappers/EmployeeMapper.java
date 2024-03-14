@@ -11,4 +11,5 @@ public interface EmployeeMapper {
 
     @InheritInverseConfiguration
     EmployeeEntity employeeToEmployeeEntity(EmployeeDto requestEmployeeDto);
+
 }

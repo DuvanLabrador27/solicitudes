@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRolEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nm_id_user_rol")
@@ -36,4 +37,5 @@ public class UserRolEntity {
     @OneToMany(mappedBy = "userRolEntity",
             targetEntity = UserEntity.class)
     private Set<UserEntity> userEntity;
+
 }

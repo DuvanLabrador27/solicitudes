@@ -15,15 +15,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class RequestVacationEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nm_id_request")
     private Long nmIdRequest;
 
-
     @Column(name = "name_request")
     private String nameRequest;
-
 
     @Column(name = "description")
     private String description;
@@ -44,16 +43,14 @@ public class RequestVacationEntity {
     @Column(name = "fe_reinstatement_date")
     private LocalDate feReinstatementDate;
 
-
     @Column(name = "ds_status", length = 10, columnDefinition = "VARCHAR(10) DEFAULT 'PENDING'")
     @Enumerated(value = EnumType.STRING)
     private StatusRequestVacation dsStatus = StatusRequestVacation.PENDING;
 
     @Basic(optional = false)
-    @Column(name = "fe_request_creation" ,
+    @Column(name = "fe_request_creation",
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime feRequestCreation = LocalDateTime.now();
-
 
     @ManyToOne(
             fetch = FetchType.LAZY,
@@ -64,14 +61,5 @@ public class RequestVacationEntity {
     )
     @JoinColumn(name = "nm_id_user")
     private UserEntity userEntity;
-
-
-
-
-
-
-
-
-
 
 }

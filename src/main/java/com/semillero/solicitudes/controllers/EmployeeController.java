@@ -4,6 +4,7 @@ import com.semillero.solicitudes.exceptions.ResourceNotFoundException;
 import com.semillero.solicitudes.persistence.dto.EmployeeDto;
 import com.semillero.solicitudes.services.interfaces.IEmployeeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +13,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
-@Tag(name = "Employee" , description = "Employee management")
+@AllArgsConstructor
+@Tag(name = "Employee", description = "Employee management")
 public class EmployeeController {
-    private final IEmployeeService employeeService;
 
-    public EmployeeController(IEmployeeService employeeService) {
-        this.employeeService = employeeService;
-    }
+    private final IEmployeeService employeeService;
 
     @GetMapping("/employees")
     public List<EmployeeDto> getEmployees() {
@@ -28,7 +27,7 @@ public class EmployeeController {
     @GetMapping("/employees/{employeeId}")
     public ResponseEntity<?> getEmployeeById(@PathVariable Long employeeId) throws ResourceNotFoundException {
         EmployeeDto employee = this.employeeService.getEmployeeById(employeeId);
-        if(employee == null){
+        if (employee == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(employee, HttpStatus.OK);
@@ -36,8 +35,8 @@ public class EmployeeController {
 
     @PostMapping("/employeesCreate")
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDto employee) {
-            EmployeeDto employeeDto = this.employeeService.createEmployee(employee);
-            return new ResponseEntity<>(employeeDto, HttpStatus.CREATED);
+        EmployeeDto employeeDto = this.employeeService.createEmployee(employee);
+        return new ResponseEntity<>(employeeDto, HttpStatus.CREATED);
 
     }
 
@@ -49,11 +48,11 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/employeesDelete/{employeeId}")
-    public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId){
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
         Boolean employee = this.employeeService.deleteEmployee(employeeId);
-        if(employee){
+        if (employee) {
             return new ResponseEntity<>("The employee with id " + employeeId + " has been delete correctly", HttpStatus.OK);
-        }else {
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

@@ -1,8 +1,8 @@
 package com.semillero.solicitudes.persistence.entities;
 
 import com.semillero.solicitudes.persistence.enums.DocumentTypes;
-import com.semillero.solicitudes.persistence.enums.UserStatus;
 import com.semillero.solicitudes.persistence.enums.TypeOfContract;
+import com.semillero.solicitudes.persistence.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nm_id_employee")
@@ -47,10 +48,8 @@ public class EmployeeEntity {
     @Column(name = "ds_address")
     private String dsAddress;
 
-
     @Column(name = "fe_hire_date")
     private LocalDate feHireDate;
-
 
     @Column(name = "fe_departure_date")
     private LocalDate feDepartureDate;
@@ -88,6 +87,5 @@ public class EmployeeEntity {
     )
     @JoinColumn(name = "nm_id_position")
     private PositionEntity positionEntity;
-
 
 }

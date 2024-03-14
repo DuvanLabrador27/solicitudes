@@ -8,7 +8,6 @@ public interface IEmployeeService {
 
     public List<EmployeeDto> getEmployees();
 
-
     public EmployeeDto getEmployeeById(Long employeeId);
 
     public EmployeeDto createEmployee(EmployeeDto employee);
@@ -16,4 +15,5 @@ public interface IEmployeeService {
     public EmployeeDto updateEmployee(Long employeeId, EmployeeDto employee);
 
     public Boolean deleteEmployee(Long id);
+
 }

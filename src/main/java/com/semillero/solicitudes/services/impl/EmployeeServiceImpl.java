@@ -7,6 +7,8 @@ import com.semillero.solicitudes.persistence.entities.EmployeeEntity;
 import com.semillero.solicitudes.persistence.mappers.EmployeeMapper;
 import com.semillero.solicitudes.persistence.repositories.EmployeeRepository;
 import com.semillero.solicitudes.services.interfaces.IEmployeeService;
+import com.semillero.solicitudes.utils.Constants;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,15 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class EmployeeServiceImpl implements IEmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
-
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
-        this.employeeRepository = employeeRepository;
-        this.employeeMapper = employeeMapper;
-    }
 
     @Override
     public List<EmployeeDto> getEmployees() {
@@ -35,7 +33,6 @@ public class EmployeeServiceImpl implements IEmployeeService {
         verifyEmployeeExistence(employeeId);
         EmployeeEntity employee = this.employeeRepository.findById(employeeId).get();
         return this.employeeMapper.employeeToEmployeeDto(employee);
-
     }
 
     @Override
@@ -45,7 +42,6 @@ public class EmployeeServiceImpl implements IEmployeeService {
         EmployeeEntity employeeEntity = this.employeeMapper.employeeToEmployeeEntity(employee);
         EmployeeEntity employeeRepo = this.employeeRepository.save(employeeEntity);
         return this.employeeMapper.employeeToEmployeeDto(employeeRepo);
-
     }
 
     @Transactional
@@ -93,7 +89,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     public void verifyEmployeeExistence(Long id) {
         if (!this.employeeRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Employee not found with id: " + id);
+            throw new ResourceNotFoundException(Constants.EMPLOYEE_NOT_FOUND_MESSAGE + id);
         }
     }
 
@@ -103,5 +99,6 @@ public class EmployeeServiceImpl implements IEmployeeService {
                     + " can't be before hire date " + employeeDto.getFeHireDate());
         }
     }
+
 }
 

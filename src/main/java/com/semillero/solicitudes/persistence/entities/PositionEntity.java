@@ -15,6 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PositionEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nm_id_position")
@@ -37,8 +38,8 @@ public class PositionEntity {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fePositionCreation;
 
-
     @OneToMany(mappedBy = "positionEntity",
             targetEntity = EmployeeEntity.class)
     private Set<EmployeeEntity> employeeEntity;
+
 }

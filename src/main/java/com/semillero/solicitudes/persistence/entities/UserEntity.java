@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nm_id_user")
@@ -44,13 +45,10 @@ public class UserEntity {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime feUserCreated = LocalDateTime.now();
 
-
-
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = EmployeeEntity.class
-    )
+            targetEntity = EmployeeEntity.class)
     @JoinColumn(name = "nm_id_employee")
     private EmployeeEntity employeeEntity;
 
@@ -58,21 +56,13 @@ public class UserEntity {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             targetEntity = UserRolEntity.class,
-            optional = true
-    )
+            optional = true)
     @JoinColumn(name = "nm_id_rol")
     private UserRolEntity userRolEntity;
 
     @OneToMany(
             mappedBy = "userEntity",
-            targetEntity = RequestVacationEntity.class
-
-    )
+            targetEntity = RequestVacationEntity.class)
     private Set<RequestVacationEntity> requestVacationEntity;
-
-
-
-
-
 
 }

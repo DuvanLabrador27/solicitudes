@@ -11,6 +11,8 @@ import com.semillero.solicitudes.persistence.mappers.RequestVacationMapper;
 import com.semillero.solicitudes.persistence.repositories.RequestVacationRepository;
 import com.semillero.solicitudes.persistence.repositories.UserRepository;
 import com.semillero.solicitudes.services.interfaces.IRequestVacationService;
+import com.semillero.solicitudes.utils.Constants;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -21,18 +23,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class RequestVacationServiceImpl implements IRequestVacationService {
+
     private final RequestVacationRepository requestVacationRepository;
     private final UserRepository userRepository;
     private final RequestVacationMapper requestVacationMapper;
-
-
-    public RequestVacationServiceImpl(RequestVacationRepository requestVacationRepository, UserRepository userRepository, RequestVacationMapper requestVacationMapper) {
-        this.requestVacationRepository = requestVacationRepository;
-        this.userRepository = userRepository;
-        this.requestVacationMapper = requestVacationMapper;
-    }
-
 
     @Override
     public List<RequestVacationDto> getAllRequestVacation(Long userId) {
@@ -77,9 +73,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
                 requestVacation.setFeEndDate(endDate);
                 requestVacation.setFeReinstatementDate(nextBusinessDay);
             }
-        }
-
-        else if (oneYear) {
+        } else if (oneYear) {
             if (requestVacation.getNmNumberOfDaysRequested() == null) {
                 throw new ResourceBadRequestException("You must enter the number of vacation days");
             }
@@ -91,7 +85,14 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
             requestVacation.setFeReinstatementDate(reinstatementDate);
 
             LocalDate endDate = calculateEndDate(requestVacation.getFeStartDate(), requestVacation.getNmNumberOfDaysRequested());
-            requestVacation.setFeEndDate(endDate);
+            if (isBusinessDay(endDate.plusDays(1))) {
+                requestVacation.setFeEndDate(endDate);
+                requestVacation.setFeReinstatementDate(endDate.plusDays(1));
+            } else {
+                LocalDate nextBusinessDay = searchBusinessDay(endDate.plusDays(1));
+                requestVacation.setFeEndDate(endDate);
+                requestVacation.setFeReinstatementDate(nextBusinessDay);
+            }
 
         } else {
             throw new ResourceBadRequestException("Vacations can only be requested if you have more than 2 months");
@@ -106,7 +107,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
     private void verifyUserExistence(Long id) {
         if (!this.userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
+            throw new ResourceNotFoundException(Constants.USER_NOT_FOUND_MESSAGE + id);
         }
     }
 
@@ -117,9 +118,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         Period period = Period.between(hireDate, currentDate);
 
         if (period.getYears() >= 1) {
-
             return true;
-
         } else {
             return false;
         }
@@ -150,7 +149,6 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         double div = (double) months / monthsYear;
         int availableDays = (int) Math.ceil(div * maxDays);
         return availableDays;
-
     }
 
     private boolean isBusinessDay(LocalDate dateAvailable) {
@@ -163,16 +161,12 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         while (!isBusinessDay(nextDay)) {
             nextDay = nextDay.plusDays(1);
         }
-
         return nextDay;
     }
 
 
     private LocalDate reinstatementDate(LocalDate startDate, int availableDays) {
         LocalDate departureDay = startDate.plusDays(availableDays);
-
-        departureDay = departureDay.plusDays(2);
-
         return searchBusinessDay(departureDay);
     }
 
@@ -188,7 +182,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
     private LocalDate calculateEndDate(LocalDate startDate, int numberOfDaysRequested) {
         LocalDate endDate = startDate;
-        int daysAdded = 0;
+        int daysAdded = 1;
         while (daysAdded < numberOfDaysRequested) {
             endDate = endDate.plusDays(1);
             if (isBusinessDay(endDate)) {
@@ -211,6 +205,5 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         requestVacationEntity.setUserEntity(user);
         return requestVacationEntity;
     }
-
 
 }

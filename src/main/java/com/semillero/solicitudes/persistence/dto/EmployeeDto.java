@@ -23,5 +23,4 @@ public class EmployeeDto {
     private LocalDate feDepartureDate;
     private TypeOfContract dsTypeOfContract;
     private UserStatus dsEmployeeStatus;
-
 }
