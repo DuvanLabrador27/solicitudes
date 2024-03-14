@@ -1,5 +1,6 @@
 package com.semillero.solicitudes.services.impl;
 
+import com.semillero.solicitudes.exceptions.ResourceBadRequestException;
 import com.semillero.solicitudes.exceptions.ResourceNotFoundException;
 import com.semillero.solicitudes.persistence.dto.UserDto;
 import com.semillero.solicitudes.persistence.entities.EmployeeEntity;
@@ -11,6 +12,9 @@ import com.semillero.solicitudes.services.interfaces.IUserService;
 import com.semillero.solicitudes.utils.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
@@ -37,6 +41,10 @@ public class UserServiceImpl implements IUserService {
     }
 
     private UserEntity createUserTemp(UserDto userDto, EmployeeEntity employee) {
+        if(!isValidEmail(userDto.getDsEmail())){
+            throw new ResourceBadRequestException(Constants.EMAIL_NOT_VALID_MESSAGE);
+        }
+
         UserEntity userEntity = new UserEntity();
         userEntity.setDsUsername(userDto.getDsUsername());
         userEntity.setDsPassword(userDto.getDsPassword());
@@ -44,6 +52,13 @@ public class UserServiceImpl implements IUserService {
         userEntity.setDsUserStatus(userDto.getDsUserStatus());
         userEntity.setEmployeeEntity(employee);
         return userEntity;
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
 }

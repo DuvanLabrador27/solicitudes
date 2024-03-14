@@ -14,6 +14,7 @@ public class Constants {
     public static final String NM_NUMBER_DAYS_BETWEEN_RANGE_MESSAGE = "Number of vacation days must be between 6 and 15";
     public static final String MONTHS_GREATER_THAN_TWO_MESSAGE = "Vacations can only be requested if you have more than 2 months";
     public static final String VACATIONS_REQUEST_DAYS_MESSAGE = "Vacation request must be made at least 15 days before the start date";
+    public static final String EMAIL_NOT_VALID_MESSAGE = "The email is not valid, try again";
     public static final String SWAGGER_TITLE_MESSAGE = "Request Vacation API";
     public static final String SWAGGER_DESCRIPTION_MESSAGE = "This is a API for request a vacation";
     public static final String SWAGGER_VERSION_MESSAGE = "1.0";

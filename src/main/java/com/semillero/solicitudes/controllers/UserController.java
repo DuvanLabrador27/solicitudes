@@ -3,6 +3,7 @@ package com.semillero.solicitudes.controllers;
 import com.semillero.solicitudes.persistence.dto.UserDto;
 import com.semillero.solicitudes.services.interfaces.IUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
