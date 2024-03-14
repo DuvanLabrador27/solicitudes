@@ -25,6 +25,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public List<EmployeeDto> getEmployees() {
         List<EmployeeEntity> users = employeeRepository.findAll();
+        if(users.isEmpty()){
+            throw new ResourceNotFoundException(Constants.LIST_NOT_FOUND_MESSAGE);
+        }
         return users.stream().map(emp -> this.employeeMapper.employeeToEmployeeDto(emp)).collect(Collectors.toList());
     }
 

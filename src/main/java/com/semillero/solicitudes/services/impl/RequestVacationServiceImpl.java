@@ -32,13 +32,21 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
     @Override
     public List<RequestVacationDto> getAllRequestVacation(Long userId) {
+        verifyUserExistence(userId);
         List<RequestVacationEntity> requestVacationEntities = this.requestVacationRepository.findAllRequestByUser(userId);
+        if(requestVacationEntities.isEmpty()){
+            throw new ResourceNotFoundException(Constants.LIST_NOT_FOUND_MESSAGE);
+        }
         return requestVacationEntities.stream().map(req -> this.requestVacationMapper.requestVacationToRequestVacationDto(req)).collect(Collectors.toList());
     }
 
     @Override
     public List<RequestVacationDto> getRequestVacationById(Long requestId, Long userId) {
+        verifyUserExistence(userId);
         List<RequestVacationEntity> requestVacationEntities = this.requestVacationRepository.findByNmIdRequestAndNmIdUser(requestId, userId);
+        if(requestVacationEntities.isEmpty()){
+            throw new ResourceNotFoundException(Constants.LIST_NOT_FOUND_MESSAGE);
+        }
         return requestVacationEntities.stream().map(req -> this.requestVacationMapper.requestVacationToRequestVacationDto(req)).collect(Collectors.toList());
     }
 
@@ -54,7 +62,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
 
         TypeOfContract contractType = user.getEmployeeEntity().getDsTypeOfContract();
         if (contractType != TypeOfContract.FIXED_TERM && contractType != TypeOfContract.INDEFINITE_TERM) {
-            throw new ResourceBadRequestException("Vacation request can only be created for employees with fixed term or indefinite term contracts");
+            throw new ResourceBadRequestException(Constants.TYPE_CONTRACT_MESSAGE);
         }
 
         if (periodProbation && !oneYear) {
@@ -75,10 +83,10 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
             }
         } else if (oneYear) {
             if (requestVacation.getNmNumberOfDaysRequested() == null) {
-                throw new ResourceBadRequestException("You must enter the number of vacation days");
+                throw new ResourceBadRequestException(Constants.NM_NUMBER_DAYS_NULL_MESSAGE);
             }
             if (requestVacation.getNmNumberOfDaysRequested() < 6 || requestVacation.getNmNumberOfDaysRequested() > 15) {
-                throw new ResourceBadRequestException("Number of vacation days must be between 6 and 15");
+                throw new ResourceBadRequestException(Constants.NM_NUMBER_DAYS_BETWEEN_RANGE_MESSAGE);
             }
 
             LocalDate reinstatementDate = reinstatementDate(requestVacation.getFeStartDate(), requestVacation.getNmNumberOfDaysRequested());
@@ -95,7 +103,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
             }
 
         } else {
-            throw new ResourceBadRequestException("Vacations can only be requested if you have more than 2 months");
+            throw new ResourceBadRequestException(Constants.MONTHS_GREATER_THAN_TWO_MESSAGE);
         }
 
         validateVacationRequestDate(requestVacation.getFeStartDate());
@@ -176,7 +184,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         long daysDifference = ChronoUnit.DAYS.between(today, startDate);
 
         if (daysDifference < 15) {
-            throw new ResourceBadRequestException("Vacation request must be made at least 15 days before the start date");
+            throw new ResourceBadRequestException(Constants.VACATIONS_REQUEST_DAYS_MESSAGE);
         }
     }
 
