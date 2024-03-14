@@ -3,6 +3,7 @@ package com.semillero.solicitudes.controllers;
 import com.semillero.solicitudes.persistence.dto.RequestVacationDto;
 import com.semillero.solicitudes.persistence.entities.RequestVacationEntity;
 import com.semillero.solicitudes.services.interfaces.IRequestVacationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1")
+@Tag(name = "Request Vacation" , description = "Request Vacation management")
 public class RequestVacationController {
     private final IRequestVacationService requestVacationService;
     public RequestVacationController(IRequestVacationService requestVacationService){

@@ -16,4 +16,6 @@ public class UserDto {
     private String dsEmail;
     private UserStatus dsUserStatus;
     private LocalDateTime feUserCreated;
+    private Long employeeId;
+
 }
