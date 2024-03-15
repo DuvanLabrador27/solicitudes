@@ -1,0 +1,30 @@
+spring:
+  jackson:
+    time-zone: America/Bogota
+  datasource:
+    url:  ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+springdoc:
+  api-docs:
+    enabled: true
+    path: /openapi/v3/api-docs
+    packages: com.semillero.solicitudes.controllers
+  swagger-ui:
+    enabled: true
+    path: /openapi/swagger-ui.html
+  pathsToMatch: /**

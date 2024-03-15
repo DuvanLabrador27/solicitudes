@@ -5,8 +5,11 @@ import com.semillero.solicitudes.persistence.entities.RequestVacationEntity;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface RequestVacationMapper {
     RequestVacationDto requestVacationToRequestVacationDto(RequestVacationEntity requestVacationEntity);
     @InheritInverseConfiguration

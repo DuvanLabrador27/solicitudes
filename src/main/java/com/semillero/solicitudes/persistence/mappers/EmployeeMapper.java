@@ -4,8 +4,11 @@ import com.semillero.solicitudes.persistence.dto.EmployeeDto;
 import com.semillero.solicitudes.persistence.entities.EmployeeEntity;
 import org.mapstruct.*;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface EmployeeMapper {
+
 
     EmployeeDto employeeToEmployeeDto(EmployeeEntity employeeEntity);
 
