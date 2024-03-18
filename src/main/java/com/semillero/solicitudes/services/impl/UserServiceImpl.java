@@ -11,10 +11,13 @@ import com.semillero.solicitudes.persistence.repositories.UserRepository;
 import com.semillero.solicitudes.services.interfaces.IUserService;
 import com.semillero.solicitudes.utils.Constants;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +26,15 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
     private final UserMapper userMapper;
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        List<UserEntity> userEntities = this.userRepository.findAll();
+        if(userEntities.isEmpty()){
+            throw new ResourceNotFoundException(Constants.LIST_NOT_FOUND_MESSAGE);
+        }
+        return userEntities.stream().map(user -> this.userMapper.userToUserDto(user)).collect(Collectors.toList());
+    }
 
     @Override
     public UserDto createUser(UserDto userDto, Long employeeId) {
@@ -60,5 +72,4 @@ public class UserServiceImpl implements IUserService {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-
 }
