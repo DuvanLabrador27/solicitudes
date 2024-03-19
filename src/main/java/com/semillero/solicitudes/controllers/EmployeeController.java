@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/employees")
 @AllArgsConstructor
 @Tag(name = "Employee", description = "Employee management")
 public class EmployeeController {
 
     private final IEmployeeService employeeService;
 
-    @GetMapping("/employees")
+    @GetMapping("/employeeList")
     public List<EmployeeDto> getEmployees() {
         return this.employeeService.getEmployees();
     }
 
-    @GetMapping("/employees/{employeeId}")
+    @GetMapping("/getEmployee/{employeeId}")
     public ResponseEntity<?> getEmployeeById(@PathVariable Long employeeId) throws ResourceNotFoundException {
         EmployeeDto employee = this.employeeService.getEmployeeById(employeeId);
         if (employee == null) {
@@ -33,21 +33,21 @@ public class EmployeeController {
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
-    @PostMapping("/employeesCreate")
+    @PostMapping("/employeeCreate")
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDto employee) {
         EmployeeDto employeeDto = this.employeeService.createEmployee(employee);
         return new ResponseEntity<>(employeeDto, HttpStatus.CREATED);
 
     }
 
-    @PutMapping("/employeesUpdate/{employeeId}")
+    @PutMapping("/employeeUpdate/{employeeId}")
     public ResponseEntity<?> updateEmployee(@PathVariable Long employeeId, @RequestBody EmployeeDto employee) {
         EmployeeDto employeeDto = this.employeeService.updateEmployee(employeeId, employee);
         return new ResponseEntity<>(employeeDto, HttpStatus.OK);
 
     }
 
-    @DeleteMapping("/employeesDelete/{employeeId}")
+    @DeleteMapping("/employeeDelete/{employeeId}")
     public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
         Boolean employee = this.employeeService.deleteEmployee(employeeId);
         if (employee) {
