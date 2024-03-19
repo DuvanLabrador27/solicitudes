@@ -2,9 +2,9 @@ spring:
   jackson:
     time-zone: America/Bogota
   datasource:
-    url:  ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url:  jdbc:mysql://137.184.91.41:3306/db_caso_autoservicio?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    username: duvan
+    password: Digital0cean
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
