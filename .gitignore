@@ -2,6 +2,8 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
+!**/src/resources/application-dev.yml
+!**/src/resources/application-prod.yml
 !**/src/test/**/build/
 /src/main/resources/application.prod.yml
 
