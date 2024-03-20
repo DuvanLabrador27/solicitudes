@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/users")
 @AllArgsConstructor
 @Tag(name = "Users", description = "User management")
 public class UserController {
 
     private final IUserService userService;
 
-    @GetMapping("/users")
+    @GetMapping("/usersList")
     public List<UserDto> getUsers() {
         return this.userService.getAllUsers();
     }

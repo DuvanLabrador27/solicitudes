@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/request-vacations")
 @AllArgsConstructor
 @Tag(name = "Request Vacation", description = "Request Vacation management")
 public class RequestVacationController {
