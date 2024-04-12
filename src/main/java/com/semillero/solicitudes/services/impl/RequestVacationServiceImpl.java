@@ -3,6 +3,7 @@ package com.semillero.solicitudes.services.impl;
 import com.semillero.solicitudes.exceptions.ResourceBadRequestException;
 import com.semillero.solicitudes.exceptions.ResourceNotFoundException;
 import com.semillero.solicitudes.persistence.dto.RequestVacationDto;
+import com.semillero.solicitudes.persistence.entities.EmployeeEntity;
 import com.semillero.solicitudes.persistence.entities.RequestVacationEntity;
 import com.semillero.solicitudes.persistence.entities.UserEntity;
 import com.semillero.solicitudes.persistence.enums.StatusRequestVacation;
@@ -15,11 +16,13 @@ import com.semillero.solicitudes.utils.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,9 +62,13 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         boolean periodProbation = validateMonth(user);
         boolean oneYear = validateOneYear(user);
 
+        EmployeeEntity employee = user.getEmployeeEntity();
+        if (employee == null) {
+            throw new ResourceBadRequestException(Constants.EMPLOYEE_NOT_FOUND_MESSAGE);
+        }
 
-        TypeOfContract contractType = user.getEmployeeEntity().getDsTypeOfContract();
-        if (contractType != TypeOfContract.FIXED_TERM && contractType != TypeOfContract.INDEFINITE_TERM) {
+        TypeOfContract contractType = employee.getDsTypeOfContract();
+        if (contractType == null || (contractType != TypeOfContract.FIXED_TERM && contractType != TypeOfContract.INDEFINITE_TERM)) {
             throw new ResourceBadRequestException(Constants.TYPE_CONTRACT_MESSAGE);
         }
 
@@ -114,39 +121,44 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
     }
 
     private void verifyUserExistence(Long id) {
-        if (!this.userRepository.existsById(id)) {
+        Optional<UserEntity> optionalUser = this.userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
             throw new ResourceNotFoundException(Constants.USER_NOT_FOUND_MESSAGE + id);
         }
     }
 
+    //Improve
     private boolean validateOneYear(UserEntity user) {
         LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
         LocalDate currentDate = LocalDate.now();
 
-        Period period = Period.between(hireDate, currentDate);
-
-        if (period.getYears() >= 1) {
-            return true;
+        if (hireDate != null && currentDate != null) {
+            Period period = Period.between(hireDate, currentDate);
+            return period.getYears() >= 1;
         } else {
             return false;
         }
     }
-
+    //Improve
     private boolean validateMonth(UserEntity user) {
         LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
         LocalDate currentDate = LocalDate.now();
-        Period period = Period.between(hireDate, currentDate);
 
-        if (period.getYears() == 0 && period.getMonths() > 2) {
-            return true;
+        if (hireDate != null && currentDate != null) {
+            Period period = Period.between(hireDate, currentDate);
+            return period.getYears() == 0 && period.getMonths() > 2;
         } else {
             return false;
         }
     }
 
-
+    //Improve
     private int calculateDayAvailable(UserEntity user) {
         LocalDate hireDate = user.getEmployeeEntity().getFeHireDate();
+        if (hireDate == null) {
+            return 0;
+        }
+
         LocalDate current = LocalDate.now();
 
         long monthsWorked = Period.between(hireDate, current).toTotalMonths();
@@ -158,6 +170,7 @@ public class RequestVacationServiceImpl implements IRequestVacationService {
         int availableDays = (int) Math.ceil(div * maxDays);
         return availableDays;
     }
+
 
     private boolean isBusinessDay(LocalDate dateAvailable) {
         return dateAvailable.getDayOfWeek() != DayOfWeek.SATURDAY && dateAvailable.getDayOfWeek() != DayOfWeek.SUNDAY;

@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class RequestVacationDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long nmIdRequest;

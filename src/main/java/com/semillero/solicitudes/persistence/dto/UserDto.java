@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class UserDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long nmIdUser;

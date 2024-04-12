@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +35,8 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public EmployeeDto getEmployeeById(Long employeeId) {
         verifyEmployeeExistence(employeeId);
-        EmployeeEntity employee = this.employeeRepository.findById(employeeId).get();
-        return this.employeeMapper.employeeToEmployeeDto(employee);
+        EmployeeEntity employeeEntity = this.employeeRepository.findById(employeeId).get();
+        return this.employeeMapper.employeeToEmployeeDto(employeeEntity);
     }
 
     @Override
@@ -91,7 +92,8 @@ public class EmployeeServiceImpl implements IEmployeeService {
     }
 
     public void verifyEmployeeExistence(Long id) {
-        if (!this.employeeRepository.existsById(id)) {
+       Optional<EmployeeEntity> optionalEmployee = this.employeeRepository.findById(id);
+        if (optionalEmployee.isEmpty()) {
             throw new ResourceNotFoundException(Constants.EMPLOYEE_NOT_FOUND_MESSAGE + id);
         }
     }

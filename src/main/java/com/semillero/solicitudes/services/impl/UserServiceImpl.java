@@ -15,6 +15,7 @@ import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -47,7 +48,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     private void verifyEmployeeExistence(Long employeeId) {
-        if (!this.employeeRepository.existsById(employeeId)) {
+        Optional<EmployeeEntity> optionalEmployee = this.employeeRepository.findById(employeeId);
+
+        if (optionalEmployee.isEmpty()) {
             throw new ResourceNotFoundException(Constants.EMPLOYEE_NOT_FOUND_MESSAGE + employeeId);
         }
     }

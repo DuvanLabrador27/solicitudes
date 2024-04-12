@@ -16,6 +16,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class EmployeeEntity {
 
     @Id
